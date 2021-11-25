@@ -1,0 +1,42 @@
+const connection = require("./connection");
+
+function getEmployees() {
+  return connection
+    .promise()
+    .query(
+      "SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(manager.first_name, ' ', manager.last_name) AS manager FROM employee LEFT JOIN role on employee.role_id = role.id LEFT JOIN department on role.department_id = department.id LEFT JOIN employee manager on manager.id = employee.manager_id;"
+    );
+}
+
+function createEmployee(employee) {
+  return connection.promise().query("INSERT INTO employee SET ?", employee);
+}
+
+function getDepartments() {
+  return connection.promise().query("SELECT * FROM department;");
+}
+
+function createDepartment(dept) {
+  return connection.promise().query("INSERT INTO department SET ?", dept);
+}
+
+function getRoles() {
+  return connection
+    .promise()
+    .query(
+      "SELECT role.id, role.title, department.name AS department, role.salary FROM role LEFT JOIN department on role.department_id = department.id;"
+    );
+}
+
+function createRole(role) {
+  return connection.promise().query("INSERT INTO role SET ?", role);
+}
+
+module.exports = {
+  getEmployees,
+  createEmployee,
+  getDepartments,
+  createDepartment,
+  getRoles,
+  createRole,
+};
